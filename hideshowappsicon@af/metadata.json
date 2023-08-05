@@ -1,0 +1,11 @@
+{
+  "description": "Hide show apps icon in dash",
+  "name": "Hide Show Apps Icon",
+  "shell-version": [
+    "43",
+    "44"
+  ],
+  "uuid": "hideshowappsicon@af",
+  "version": 1,
+  "url": "https://github.com/arnaud-feldmann/hideshowappsicon"
+}
