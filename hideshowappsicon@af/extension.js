@@ -3,17 +3,10 @@ const dash = Main.overview.dash;
 const showAppsIcon = dash._showAppsIcon;
 let dashHeightEvent = null;
 
-function hideShowAppsIcon() {
-	dash.disconnect(dashHeightEvent);
-	showAppsIcon.visible = false;
-}
-
 function enable() {
-	if (Main.layoutManager._startingUp) {
-		dashHeightEvent = dash.connect('notify::height', hideShowAppsIcon);
-		return;
-	}
-	hideShowAppsIcon();
+	disable();
+	showAppsIcon.visible = false;
+	dashHeightEvent = dash.connect('notify::height', enable);
 }
 
 function disable() {
