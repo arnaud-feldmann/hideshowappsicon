@@ -54,9 +54,9 @@ function disable() {
 	showIcon();
 	dash.disconnect(dash_height_event);
 	dash_height_event = null;
-	GLib.Source.remove(source_timer_wait);
+	if (source_timer_wait !== null) GLib.Source.remove(source_timer_wait);
 	source_timer_wait = null;
-	GLib.Source.remove(source_timer_block);
+	if (source_timer_block !== null) GLib.Source.remove(source_timer_block);
 	source_timer_block = null;
 }
 
