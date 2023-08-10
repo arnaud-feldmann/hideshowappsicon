@@ -24,6 +24,7 @@ function wait_for_reinit() {
 		n++;
 		if (too_early) return GLib.SOURCE_CONTINUE;
 		reinit();
+		source_timer_wait = null;
 		return GLib.SOURCE_REMOVE;
 	});
 }
@@ -35,6 +36,7 @@ function reinit() {
 		showIcon();
 		hideIcon();
 		source_timer_block = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 2, () => {
+			source_timer_block = null;
 			too_early = false;
 			return GLib.SOURCE_REMOVE;
 		});
