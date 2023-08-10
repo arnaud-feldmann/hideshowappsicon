@@ -2,7 +2,9 @@ const Main = imports.ui.main;
 const dash = Main.overview.dash;
 const showAppsIcon = dash._showAppsIcon;
 const { GLib, Gio } = imports.gi;
-let dashHeightEvent = null;
+let dash_height_event = null;
+let source_timer_wait = null; 
+let source_timer_block = null;
 let too_early = false;
 
 function hideIcon() {
@@ -17,7 +19,7 @@ function showIcon() {
 
 function wait_for_reinit() {
 	let n = 0;
-	GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
+	source_timer_wait = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
 		if (n > 3) throw GLib.Error.new_literal(Gio.io_error_quark(), Gio.IOErrorEnum.TIMEOUT, "Incohesive timer"); 
 		n++;
 		if (too_early) return GLib.SOURCE_CONTINUE;
@@ -32,7 +34,7 @@ function reinit() {
 		too_early = true;
 		showIcon();
 		hideIcon();
-		GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 2, () => {
+		source_timer_block = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 2, () => {
 			too_early = false;
 			return GLib.SOURCE_REMOVE;
 		});
@@ -43,11 +45,16 @@ function reinit() {
 
 function enable() {
 	hideIcon();
-	dashHeightEvent = dash.connect("notify::height", reinit);
+	dash_height_event = dash.connect("notify::height", reinit);
 }
 
 function disable() {
 	showIcon();
-	dash.disconnect(dashHeightEvent);
+	dash.disconnect(dash_height_event);
+	dash_height_event = null;
+	GLib.Source.remove(source_timer_wait);
+	source_timer_wait = null;
+	GLib.Source.remove(source_timer_block);
+	source_timer_block = null;
 }
 
